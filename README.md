@@ -15,7 +15,6 @@ In this part will create storage account, blob container, and install and start 
 
 ### Installation
 
-
 ```
 curl -LO https://raw.githubusercontent.com/mutazn/Backup-and-Restore-AKS-cluster-using-Velero/master/source-aks-cluster.sh
 chmod +x ./source-aks-cluster.sh
@@ -94,6 +93,16 @@ velero install \
 ## Part 2: Install Velero on target AKS cluster in case you need to restore the backup on another cluster.
 
 As we already have the storage account and the Blob Container has our backup from the source AKS cluster so we only need to connect the target AKS cluster to the storage account and access the backup to restore it to the target AKS cluster.
+
+### Installation
+
+```
+curl -LO https://raw.githubusercontent.com/mutazn/Backup-and-Restore-AKS-cluster-using-Velero/master/target-aks-cluster.sh
+chmod +x ./target-aks-cluster.sh
+./target-aks-cluster.sh
+```
+The script contains the following:
+
 
 ```
 #Define the variables.
