@@ -15,13 +15,13 @@ In this part will create storage account, blob container, and install and start 
 
 ### Installation
 
-```
+```bash
 curl -LO https://raw.githubusercontent.com/mutazn/Backup-and-Restore-AKS-cluster-using-Velero/master/source-aks-cluster.sh
 chmod +x ./source-aks-cluster.sh
 ./source-aks-cluster.sh
 ```
 The script contains the following:
-
+```bash
 #Define the variables.
 TENANT_ID="TENANT_ID" 
 SUBSCRIPTION_ID="SUBSCRIPTION_ID" 
@@ -96,15 +96,14 @@ As we already have the storage account and the Blob Container has our backup fro
 
 ### Installation
 
-```
+```bash
 curl -LO https://raw.githubusercontent.com/mutazn/Backup-and-Restore-AKS-cluster-using-Velero/master/target-aks-cluster.sh
 chmod +x ./target-aks-cluster.sh
 ./target-aks-cluster.sh
 ```
 The script contains the following:
 
-
-```
+```bash
 #Define the variables.
 TENANT_ID="TENANT_ID" 
 SUBSCRIPTION_ID="SUBSCRIPTION_ID" 
@@ -130,7 +129,7 @@ AZURE_RESOURCE_GROUP="${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP}"
 AZURE_CLOUD_NAME=AzurePublicCloud
 EOF
 
-##Install Velero, uncomment this part in case you don't have Velero on your machine.
+#Install Velero, uncomment this part in case you don't have Velero on your machine.
 #echo "Installing Velero client locally..."
 #latest_version=`curl https://github.com/vmware-tanzu/velero/releases/latest`
 #latest_version=`echo $latest_version | grep -o 'v[0-9].[0-9].[0.9]'`
@@ -156,10 +155,12 @@ velero install \
 
 - Backup namespace resources including persistent volumes:
 
-    `velero backup create <mybackup-name> --include-namespaces <namespace-name>`
+    ```bash 
+    velero backup create <mybackup-name> --include-namespaces <namespace-name>
+    ```
 
 - Create a backup schedule, daily, weekly. or monthly:
-  ```
+  ```bash
   velero create schedule daily --schedule="@daily" --include-namespaces <namespace>
   velero create schedule weekly --schedule="@weekly" --include-namespaces <namespace>
   velero create schedule monthly --schedule="@monthly" --include-namespaces <namespace>
@@ -169,50 +170,64 @@ velero install \
 
   This example will create a backup at 11:00 on Saturday, [this link](https://crontab.guru/) will help you to adjust cron schedule.
 
-   `velero create schedule backup-schedule --schedule="0 11 * * 6" --include-namespaces <namespace>`
+   ```bash
+   velero create schedule backup-schedule --schedule="0 11 * * 6" --include-namespaces <namespace>
+   ```
 
 - Restore the backup to the same AKS cluster or to another AKS cluster:
 
-   `velero restore create <myrestore-name> --from-backup <mybackup-name>` 
+   ```bash
+   velero restore create <myrestore-name> --from-backup <mybackup-name>
+   ``` 
 
 - Restore namespace only from a backup:
 
-   `velero restore create <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace>`
+   ```bash
+   velero restore create <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace>
+   ```
 
 - Restore namespace only from a backup to different namespace:
    
-   `velero restore create  <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace> --namespace-mappings [old-namespace]:[new-namespace]`
+   ```bash
+   velero restore create  <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace> --namespace-mappings [old-namespace]:[new-namespace]
+   ```
 
 ## Troubleshooting
 - Check Velero logs:
 
-  `kubectl logs -f -l component=velero -n velero`
+  ```bash
+  kubectl logs -f -l component=velero -n velero
+  ```
 
 - List the backups:
 
-  `velero backup get`
-
+  ```bash
+  velero backup get
+  ```
+  
 - Describe the backup and its logs:
   
-  ```
+  ```bash
    velero backup describe <mybackup-name> --details
    velero restore logs <mybackup-name>
   ```
 
 - List the restores:
 
-  `velero restore get`
-
+  ```bash
+  velero restore get
+  ```
+  
 - Describe the backup and its logs:
 
-  ```
+  ```bash
    velero restore describe <myrestore-name> --details
    velero restore logs <myrestore-name>
   ```
 
 - List the schedules and describe a schedule: 
 
-  ```
+  ```bash
    velero schedule  get
    velero schedule describe <schedule-name>
 
@@ -220,27 +235,29 @@ velero install \
 
 - Delete a backup or all backups:
 
-  ```
+  ```bash
    velero backup delete <backup-name>
    velero backup delete --all 
   ```
 
 - Delete a restore or all restores, this will delete the metadata only and will not delete the restored resources:
 
-  ```
+  ```bash
    velero backup delete <backup-name>
    velero backup delete --all 
   ```
 
 - Delete a schedule or all schedules:
 
-  ```
+  ```bash
    velero schedule delete <schedule-name>
    velero schedule delete --all
   ```
 - Check the snapshots:
 
-  `az resource list -g Velero_Backups -o table`
+  ```bash
+  az resource list -g Velero_Backups -o table
+  ```
 
 ![image](https://user-images.githubusercontent.com/32297719/116011563-5fbf2180-a62e-11eb-9ea7-adfdf1ae053e.png)
 
