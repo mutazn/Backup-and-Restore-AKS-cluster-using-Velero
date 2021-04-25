@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Did you connect to your AKS cluster and define these varibales the script: TENANT_ID, SUBSCRIPTION_ID, SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP, LOCATION?(yes/no)"
+echo "Did you connect to your AKS cluster and define these varibales in the script: TENANT_ID, SUBSCRIPTION_ID, SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP, LOCATION?(yes/no)"
 read input
 
 if [ "$input" == "yes" ]
