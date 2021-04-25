@@ -13,7 +13,7 @@ This article talks about how to backup and restore AKS cluster or how to migrate
 ## Part 1: Create storage account and install Velero on source AKS cluster
 In this part will create storage account, blob container, and install and start Velero on source AKS cluster.
 
-### Installation:
+### Installation
 
 
 ```
