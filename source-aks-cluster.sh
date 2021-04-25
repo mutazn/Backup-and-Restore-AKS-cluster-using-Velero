@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "Did you connect to your AKS cluster and define these varibales the script: TENANT_ID, SUBSCRIPTION_ID, SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP, LOCATION?(yes/no)"
 read input
 
@@ -71,7 +72,7 @@ velero install \
   --wait
   
 else
-echo "Please open the bash script and define them before running the script."
+echo "Please connect to your AKS cluster, open the bash script and define the variables before running the script."
 exit 0
 fi
 
