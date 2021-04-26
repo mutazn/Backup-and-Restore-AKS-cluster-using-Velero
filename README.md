@@ -159,7 +159,7 @@ velero install \
     velero backup create <mybackup-name> --include-namespaces <namespace-name>
     ```
 
-- Create a backup schedule, daily, weekly. or monthly:
+- Create a backup schedule, daily, weekly, or monthly:
   ```bash
   velero create schedule daily --schedule="@daily" --include-namespaces <namespace>
   velero create schedule weekly --schedule="@weekly" --include-namespaces <namespace>
