@@ -113,13 +113,14 @@ TENANT_ID="TENANT_ID"
 SUBSCRIPTION_ID="SUBSCRIPTION_ID" 
 BACKUP_RESOURCE_GROUP=Velero_Backups
 BACKUP_STORAGE_ACCOUNT_NAME="BACKUP_STORAGE_ACCOUNT_NAME"
-VELERO_SP_DISPLAY_NAME="velerospn"
+VELERO_SP_DISPLAY_NAME=velero$RANDOM
 TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP="TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP"
 
 #Set permissions for Velero on TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
 echo "Setting permissions for Velero..."
-AZURE_CLIENT_ID=`az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv`
-AZURE_CLIENT_SECRET=`az ad sp credential reset --name $VELERO_SP_DISPLAY_NAME --append --query 'password' -o tsv`
+AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv)
+AZURE_CLIENT_ID=$(az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv)
+az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BACKUP_RESOURCE_GROUP
 az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
 
 #Save Velero credentials to local file.
@@ -135,11 +136,12 @@ EOF
 
 #Install Velero, uncomment this part in case you don't have Velero on your machine.
 #echo "Installing Velero client locally..."
-#latest_version=`curl https://github.com/vmware-tanzu/velero/releases/latest`
-#latest_version=`echo $latest_version | grep -o 'v[0-9].[0-9].[0.9]'`
-#wget https://github.com/vmware-tanzu/velero/releases/download/$latest_version/velero-$latest_version-linux-amd64.tar.gz
-#mkdir ~/velero; tar -zxf velero-$latest_version-linux-amd64.tar.gz -C ~/velero
-#mv ~/velero/velero-$latest_version-linux-amd64/velero /usr/bin/
+#latest_version=$(curl https://github.com/vmware-tanzu/velero/releases/latest)
+#latest_version=$(echo ${latest_version} | grep -o 'v[0-9].[0-9].[0.9]')
+#wget https://github.com/vmware-tanzu/velero/releases/download/${latest_version}/velero-${latest_version}-linux-amd64.tar.gz
+#mkdir ~/velero; tar -zxf velero-${latest_version}-linux-amd64.tar.gz -C ~/velero; cp ~/velero/velero-${latest_version}-linux-amd64/velero ~/velero/
+#echo 'export PATH=$PATH:~/velero' >> ~/.bash_profile && source ~/.bash_profile
+#echo 'export PATH=$PATH:~/velero' >> ~/.bashrc && source ~/.bashrc
 
 #Stare Velero on target AKS cluster
 echo "Staring Velero on target AKS cluster..."
@@ -151,6 +153,10 @@ velero install \
   --backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
   --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP \
   --wait
+  
+#clean up local file credentials
+rm ./credentials-velero-target
+
 ```
 ## Backup and Restore commands
 -  Backup all resources in all namespaces including persistent volumes:
