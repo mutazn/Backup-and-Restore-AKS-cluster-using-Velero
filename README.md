@@ -265,3 +265,4 @@ velero install \
 
 - [How to setup Velero on Microsoft Azure](https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure).
 - [Velero latest release](https://github.com/vmware-tanzu/velero/releases/tag/v1.6.0).
+- [GitHub Repository for scripts](https://github.com/mutazn/Backup-and-Restore-AKS-cluster-using-Velero/tree/main). 
