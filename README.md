@@ -8,7 +8,7 @@ This article talks about how to backup and restore AKS cluster, and how to migra
 1. Define the variables (`TENANT_ID, SUBSCRIPTION_ID, SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP, TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP, LOCATION`).
 2. Azure CLI.
 3. Connect to the AKS cluster: `az aks get-credentials --resource-group <RGname> --name <AKSname>`
-4. Make sure to run the script as sudo; We need to move Velero binary file to `/usr/bin`.
+4. This works on Azure cloud shell (bash) and local machine (bash).
 
 ## Part 1: Create storage account and install Velero on source AKS cluster
 In this part will create storage account, blob container, and install and start Velero on source AKS cluster.
@@ -26,8 +26,8 @@ The script contains the following:
 TENANT_ID="TENANT_ID" 
 SUBSCRIPTION_ID="SUBSCRIPTION_ID" 
 BACKUP_RESOURCE_GROUP=Velero_Backups
-BACKUP_STORAGE_ACCOUNT_NAME=velero$(uuidgen | cut -d '-' -f5 | tr '[A-Z]' '[a-z]')
-VELERO_SP_DISPLAY_NAME="velerospn"
+BACKUP_STORAGE_ACCOUNT_NAME=velero$(head /dev/urandom | tr -dc a-z0-9 | head -c12)
+VELERO_SP_DISPLAY_NAME=velero$RANDOM
 SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP="SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP"
 LOCATION="LOCATION"
 
@@ -55,10 +55,10 @@ az storage container create \
 
 #Set permissions for Velero
 echo "Setting permissions for Velero..."
-AZURE_CLIENT_SECRET=`az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv`
-AZURE_CLIENT_ID=`az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv`
+AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv)
+AZURE_CLIENT_ID=$(az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv)
 az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BACKUP_RESOURCE_GROUP
-az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP 
+az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
 
 #Save Velero credentials to local file.
 echo "Saving velero credentials to local file: credentials-velero..."
@@ -73,11 +73,12 @@ EOF
 
 #Install and start Velero.
 echo "Installing velero client locally..."
-latest_version=`curl https://github.com/vmware-tanzu/velero/releases/latest`
-latest_version=`echo $latest_version | grep -o 'v[0-9].[0-9].[0.9]'`
-wget https://github.com/vmware-tanzu/velero/releases/download/$latest_version/velero-$latest_version-linux-amd64.tar.gz
-mkdir ~/velero; tar -zxf velero-$latest_version-linux-amd64.tar.gz -C ~/velero
-mv ~/velero/velero-$latest_version-linux-amd64/velero /usr/bin/
+latest_version=$(curl https://github.com/vmware-tanzu/velero/releases/latest)
+latest_version=$(echo ${latest_version} | grep -o 'v[0-9].[0-9].[0.9]')
+wget https://github.com/vmware-tanzu/velero/releases/download/${latest_version}/velero-${latest_version}-linux-amd64.tar.gz
+mkdir ~/velero; tar -zxf velero-${latest_version}-linux-amd64.tar.gz -C ~/velero; cp ~/velero/velero-${latest_version}-linux-amd64/velero ~/velero/
+echo 'export PATH=$PATH:~/velero' >> ~/.bash_profile && source ~/.bash_profile
+echo 'export PATH=$PATH:~/velero' >> ~/.bashrc && source ~/.bashrc
 
 echo "Staring velero..."
 velero install \
@@ -88,6 +89,9 @@ velero install \
   --backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
   --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP \
   --wait
+
+#clean-up local file credentials
+rm ./credentials-velero
 ```
 
 ## Part 2: Install Velero on target AKS cluster in case you need to restore the backup on another cluster.
@@ -268,6 +272,11 @@ velero install \
 
 ![image](https://user-images.githubusercontent.com/32297719/116011563-5fbf2180-a62e-11eb-9ea7-adfdf1ae053e.png)
 
+- Uninstall Velero:
+  
+  ```bash  
+  velero uninstall
+  ```
 ## References
 
 - [How to setup Velero on Microsoft Azure](https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure).
