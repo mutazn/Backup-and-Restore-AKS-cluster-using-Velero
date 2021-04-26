@@ -2,7 +2,7 @@
 
 ## Summary
 
-This article talks about how to backup and restore AKS cluster or how to migrate to another AKS cluster using Velero.
+This article talks about how to backup and restore AKS cluster, and how to migrate to another AKS cluster using Velero.
 
 ## Prerequisites
 1. Define the variables (`TENANT_ID, SUBSCRIPTION_ID, SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP, TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP, LOCATION`).
@@ -173,7 +173,13 @@ velero install \
    ```bash
    velero create schedule backup-schedule --schedule="0 11 * * 6" --include-namespaces <namespace>
    ```
-
+- Backup only pv and pvc in all namespaces or specific namespace:
+  
+  ```bash
+  velero backup create my-backup --include-resources PersistentVolumeClaim,PersistentVolume 
+  velero backup create my-backup --include-resources PersistentVolumeClaim,PersistentVolume --include-namespaces <namespace>
+  ```
+  
 - Restore the backup to the same AKS cluster or to another AKS cluster:
 
    ```bash
@@ -186,16 +192,17 @@ velero install \
    velero restore create <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace>
    ```
 
-- Restore namespace only from a backup to different namespace:
+- Restore namespace only from a backup to a different namespace:
    
    ```bash
    velero restore create  <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace> --namespace-mappings [old-namespace]:[new-namespace]
    ```
 
 ## Troubleshooting
-- Check Velero logs:
+- Check Velero pod and logs:
 
   ```bash
+  kubectl get pod -n velero
   kubectl logs -f -l component=velero -n velero
   ```
 
