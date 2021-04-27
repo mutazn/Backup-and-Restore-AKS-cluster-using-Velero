@@ -226,7 +226,7 @@ rm ./credentials-velero-target
   
   ```bash
    velero backup describe <mybackup-name> --details
-   velero restore logs <mybackup-name>
+   velero backup logs <mybackup-name>
   ```
 
 - List the restores:
@@ -235,7 +235,7 @@ rm ./credentials-velero-target
   velero restore get
   ```
   
-- Describe the backup and its logs:
+- Describe the restore and its logs:
 
   ```bash
    velero restore describe <myrestore-name> --details
@@ -260,8 +260,8 @@ rm ./credentials-velero-target
 - Delete a restore or all restores, this will delete the metadata only and will not delete the restored resources:
 
   ```bash
-   velero backup delete <backup-name>
-   velero backup delete --all 
+   velero restore delete <backup-name>
+   velero restore delete --all 
   ```
 
 - Delete a schedule or all schedules:
