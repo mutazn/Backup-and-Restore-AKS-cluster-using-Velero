@@ -260,7 +260,7 @@ rm ./credentials-velero-target
 - Delete a restore or all restores, this will delete the metadata only and will not delete the restored resources:
 
   ```bash
-   velero restore delete <backup-name>
+   velero restore delete <restore-name>
    velero restore delete --all 
   ```
 
