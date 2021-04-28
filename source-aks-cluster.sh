@@ -1,8 +1,8 @@
 #!/bin/bash
-echo "Did you connect to your AKS cluster and define these varibales in the script: TENANT_ID, SUBSCRIPTION_ID, SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP, LOCATION?(yes/no)"
+echo "Did you connect to your AKS cluster, open the bash script and define the variables [TENANT_ID, SUBSCRIPTION_ID, SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP, LOCATION] before running the script?(yes/no)"
 read input
 
-if [ "$input" == "yes" ]
+if [ "$input" == "yes" ] || [ "$input" == "y" ] || [ "$input" == "YES" ] || [ "$input" == "Y" ]
 then
 #Define the variables.
 TENANT_ID="TENANT_ID" && echo TENANT_ID=$TENANT_ID
@@ -75,7 +75,7 @@ velero install \
 #clean up local file credentials
 rm ./credentials-velero
 
-echo "If velero command is not there,just run: source ~/.bash_profile && source ~/.bashrc"
+printf "\e[32;1mIf velero command is not there,just run: source ~/.bash_profile && source ~/.bashrc \e[0m \n"
 
 else
 echo "Please connect to your AKS cluster, open the bash script and define the variables before running the script."
