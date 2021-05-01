@@ -80,7 +80,7 @@ if ! command -v velero > /dev/null 2>&1;then
    latest_version=$(echo ${latest_version} | grep -o 'v[0-9].[0-9].[0.9]')
    wget https://github.com/vmware-tanzu/velero/releases/download/${latest_version}/velero-${latest_version}-linux-amd64.tar.gz
    mkdir ~/velero -p; tar -zxf velero-${latest_version}-linux-amd64.tar.gz -C ~/velero; cp ~/velero/velero-${latest_version}-linux-amd64/velero ~/velero/
-   cp ~/velero/velero ~/.local/bin/ > /dev/null 2>&1
+   mkdir ~/.local/bin/ -p; cp ~/velero/velero ~/.local/bin/ > /dev/null 2>&1
    if ! cat ~/.bash_profile | grep -q 'export PATH=$PATH:~/velero';then
    echo 'export PATH=$PATH:~/velero' >> ~/.bash_profile && source ~/.bash_profile
    fi
@@ -151,7 +151,7 @@ if ! command -v velero > /dev/null 2>&1;then
    latest_version=$(echo ${latest_version} | grep -o 'v[0-9].[0-9].[0.9]')
    wget https://github.com/vmware-tanzu/velero/releases/download/${latest_version}/velero-${latest_version}-linux-amd64.tar.gz
    mkdir ~/velero -p; tar -zxf velero-${latest_version}-linux-amd64.tar.gz -C ~/velero; cp ~/velero/velero-${latest_version}-linux-amd64/velero ~/velero/
-   cp ~/velero/velero ~/.local/bin/ > /dev/null 2>&1
+   mkdir ~/.local/bin/ -p; cp ~/velero/velero ~/.local/bin/ > /dev/null 2>&1
    if ! cat ~/.bash_profile | grep -q 'export PATH=$PATH:~/velero';then
    echo 'export PATH=$PATH:~/velero' >> ~/.bash_profile && source ~/.bash_profile
    fi
