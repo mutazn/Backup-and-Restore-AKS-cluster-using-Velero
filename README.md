@@ -307,6 +307,10 @@ rm ./credentials-velero-target
 
 ![image](https://user-images.githubusercontent.com/32297719/116011563-5fbf2180-a62e-11eb-9ea7-adfdf1ae053e.png)
 
+- Check the backups and the restores inside the blob container:
+
+![image](https://user-images.githubusercontent.com/32297719/116795617-fb450c00-aade-11eb-89ff-e29100fd6bbb.png)
+
 - Uninstall Velero:
   
   ```bash  
