@@ -7,7 +7,7 @@ This article talks about how to backup and restore AKS cluster, and how to migra
 ## Prerequisites
 1. Azure CLI.
 2. Connect to the AKS cluster: `az aks get-credentials --resource-group <RGname> --name <AKSname>`
-3. No need to define the variables if you run the scripts (source-aks-cluster.sh, target-aks-cluster.sh) as you will be asked to enter your variables once your run the scripts, otherwise, if you want to run the commands manually as explained below in part 1 and part 2 then you need to define the variables (`TENANT_ID, SUBSCRIPTION_ID, SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP, TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP, LOCATION`).
+3. No need to define the variables if you run the scripts (source-aks-cluster.sh, target-aks-cluster.sh) as you will be asked to enter your variables once you run the scripts, otherwise, if you want to run the commands manually as explained below in part 1 and part 2 then you need to define the variables (`TENANT_ID, SUBSCRIPTION_ID, SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP, TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP, LOCATION`).
 4. This works on Azure cloud shell (bash) and local machine (bash).
 
 ## Part 1: Create storage account and install Velero on source AKS cluster
