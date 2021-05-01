@@ -182,9 +182,9 @@ rm ./credentials-velero-target
 
 - Backup namespace resources including persistent volumes:
 
-    ```bash 
-    velero backup create <mybackup-name> --include-namespaces <namespace-name>
-    ```
+  ```bash 
+  velero backup create <mybackup-name> --include-namespaces <namespace-name>
+  ```
 
 - Create a backup schedule, daily, weekly, or monthly:
   ```bash
@@ -197,37 +197,53 @@ rm ./credentials-velero-target
 
   This example will create a backup at 11:00 on Saturday, [this link](https://crontab.guru/) will help you to adjust cron schedule.
 
-   ```bash
-   velero create schedule backup-schedule --schedule="0 11 * * 6" --include-namespaces <namespace>
-   ```
+  ```bash
+  velero create schedule backup-schedule --schedule="0 11 * * 6" --include-namespaces <namespace>
+  ```
 - Backup only pv and pvc in all namespaces or specific namespace:
   
   ```bash
   velero backup create <mybackup-name> --include-resources PersistentVolumeClaim,PersistentVolume 
   velero backup create <mybackup-name> --include-resources PersistentVolumeClaim,PersistentVolume --include-namespaces <namespace>
   ```
+
 - Create a backup excluding the velero and default namespaces:
+  
   ```bash
   velero backup create <mybackup-name> --exclude-namespaces velero,default
   ```
+
+- Create a backup with expiration (--ttl duration) which means how long before the backup can be garbage collected. (default 720h0m0s ~30 days) 
   
+  This example will create a backup that expires after 90 days:
+  
+  ```bash
+  velero backup create <mybackup-name> --ttl 2160h
+  ```
+  
+  This example will create a backup that will never expire:
+  
+  ```bash
+  velero backup create <mybackup-name> --ttl 0
+  ```
+
 - Restore the backup to the same AKS cluster or to another AKS cluster:
 
-   ```bash
-   velero restore create <myrestore-name> --from-backup <mybackup-name>
-   ``` 
+  ```bash
+  velero restore create <myrestore-name> --from-backup <mybackup-name>
+  ``` 
 
 - Restore namespace only from a backup:
 
-   ```bash
-   velero restore create <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace>
-   ```
+  ```bash
+  velero restore create <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace>
+  ```
 
 - Restore namespace only from a backup to a different namespace:
    
-   ```bash
-   velero restore create  <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace> --namespace-mappings [old-namespace]:[new-namespace]
-   ```
+  ```bash
+  velero restore create  <myrestore-name> --from-backup <mybackup-name> --include-namespaces <namespace> --namespace-mappings [old-namespace]:[new-namespace]
+  ```
 
 ## Troubleshooting
 - Check Velero pod and logs:
@@ -254,8 +270,8 @@ rm ./credentials-velero-target
 - Describe the backup and its logs:
   
   ```bash
-   velero backup describe <mybackup-name> --details
-   velero backup logs <mybackup-name>
+  velero backup describe <mybackup-name> --details
+  velero backup logs <mybackup-name>
   ```
 
 - List the restores:
@@ -267,37 +283,36 @@ rm ./credentials-velero-target
 - Describe the restore and its logs:
 
   ```bash
-   velero restore describe <myrestore-name> --details
-   velero restore logs <myrestore-name>
+  velero restore describe <myrestore-name> --details
+  velero restore logs <myrestore-name>
   ```
 
 - List the schedules and describe a schedule: 
 
   ```bash
-   velero schedule  get
-   velero schedule describe <schedule-name>
-
+  velero schedule  get
+  velero schedule describe <schedule-name>
   ```
 
 - Delete a backup or all backups:
 
   ```bash
-   velero backup delete <backup-name>
-   velero backup delete --all 
+  velero backup delete <backup-name>
+  velero backup delete --all 
   ```
 
 - Delete a restore or all restores, this will delete the metadata only and will not delete the restored resources:
 
   ```bash
-   velero restore delete <restore-name>
-   velero restore delete --all 
+  velero restore delete <restore-name>
+  velero restore delete --all 
   ```
 
 - Delete a schedule or all schedules:
 
   ```bash
-   velero schedule delete <schedule-name>
-   velero schedule delete --all
+  velero schedule delete <schedule-name>
+  velero schedule delete --all
   ```
 - Check the snapshots:
 
