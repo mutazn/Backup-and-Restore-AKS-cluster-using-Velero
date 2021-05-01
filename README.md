@@ -178,8 +178,10 @@ rm ./credentials-velero-target
 ## Backup and Restore commands
 -  Backup all resources in all namespaces including persistent volumes:
 
-   `velero backup create <mybackup-name>`
-
+   ```bash 
+   velero backup create <mybackup-name>
+   ```
+   
 - Backup namespace resources including persistent volumes:
 
   ```bash 
