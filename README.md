@@ -203,8 +203,12 @@ rm ./credentials-velero-target
 - Backup only pv and pvc in all namespaces or specific namespace:
   
   ```bash
-  velero backup create my-backup --include-resources PersistentVolumeClaim,PersistentVolume 
-  velero backup create my-backup --include-resources PersistentVolumeClaim,PersistentVolume --include-namespaces <namespace>
+  velero backup create <mybackup-name> --include-resources PersistentVolumeClaim,PersistentVolume 
+  velero backup create <mybackup-name> --include-resources PersistentVolumeClaim,PersistentVolume --include-namespaces <namespace>
+  ```
+- Create a backup excluding the velero and default namespaces:
+  ```bash
+  velero backup create <mybackup-name> --exclude-namespaces velero,default
   ```
   
 - Restore the backup to the same AKS cluster or to another AKS cluster:
