@@ -91,7 +91,7 @@ velero install \
   --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP
   
 #add node selector to the velero deployment to run Velero on the Linux nodes
-kubectl patch deployment velero -n velero -p '{"spec": {"template": {"spec": {"nodeSelector":{"beta.kubernetes.io/os"
+kubectl patch deployment velero -n velero -p '{"spec": {"template": {"spec": {"nodeSelector":{"beta.kubernetes.io/os":"linux"}}}}}'
 
 #clean up local file credentials
 rm ./credentials-velero
