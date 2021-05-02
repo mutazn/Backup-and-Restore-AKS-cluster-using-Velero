@@ -12,13 +12,13 @@ read -p "Enter the location of your backup storage account: " LOCATION
 printf "\e[32;1m*******Your Variables*******\e[0m \n"
 
 #Define the variables.
-TENANT_ID=${TENANT_ID} && echo TENANT_ID=${TENANT_ID}
-SUBSCRIPTION_ID=${SUBSCRIPTION_ID} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
+TENANT_ID=${TENANT_ID//[\"\']} && echo TENANT_ID=${TENANT_ID}
+SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\']} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
 BACKUP_RESOURCE_GROUP=Velero_Backups && echo BACKUP_RESOURCE_GROUP=${BACKUP_RESOURCE_GROUP} 
 BACKUP_STORAGE_ACCOUNT_NAME=velero$(head /dev/urandom | tr -dc a-z0-9 | head -c12) && echo BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME}
 VELERO_SP_DISPLAY_NAME=velero$RANDOM && echo VELERO_SP_DISPLAY_NAME=${VELERO_SP_DISPLAY_NAME}
-SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP} && echo SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP}
-LOCATION=${LOCATION} && echo LOCATION=${LOCATION}
+SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\']} && echo SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP}
+LOCATION=${LOCATION//[\"\']} && echo LOCATION=${LOCATION}
 
 printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"
 read confirm
@@ -40,14 +40,14 @@ az storage account create \
   --kind BlobStorage \
   --access-tier Hot
   
-#Create Blob Container
+#Create Blob Container.
 echo "Creating Blob Container..."
 az storage container create \
   --name velero \
   --public-access off \
   --account-name $BACKUP_STORAGE_ACCOUNT_NAME
 
-#Set permissions for Velero
+#Set permissions for Velero.
 echo "Adding permissions for Velero..."
 AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv)
 AZURE_CLIENT_ID=$(az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv)
@@ -90,10 +90,10 @@ velero install \
   --backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
   --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP
 
-#add node selector to the velero deployment to run Velero on the Linux nodes
+#add node selector to the velero deployment to run Velero only on the Linux nodes.
 kubectl patch deployment velero -n velero -p '{"spec": {"template": {"spec": {"nodeSelector":{"beta.kubernetes.io/os":"linux"}}}}}'
 
-#clean up local file credentials
+#clean up local file credentials.
 rm ./credentials-velero
 
 printf "\e[32;1m********************* \e[0m \n"

@@ -12,19 +12,19 @@ read -p "Enter the backup storage account name that exists in the backup resourc
 printf "\e[32;1m*******Your Variables*******\e[0m \n"
 
 #Define the variables.
-TENANT_ID=${TENANT_ID} && echo TENANT_ID=${TENANT_ID}
-SUBSCRIPTION_ID=${SUBSCRIPTION_ID} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
+TENANT_ID=${TENANT_ID//[\"\']} && echo TENANT_ID=${TENANT_ID}
+SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\']} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
 BACKUP_RESOURCE_GROUP=Velero_Backups && echo BACKUP_RESOURCE_GROUP=${BACKUP_RESOURCE_GROUP} 
-BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME} && echo BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME}
+BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME//[\"\']} && echo BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME}
 VELERO_SP_DISPLAY_NAME=velero$RANDOM && echo VELERO_SP_DISPLAY_NAME=$VELERO_SP_DISPLAY_NAME
-TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP} && echo TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\']} && echo TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
 
 printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"
 read confirm
 if [ "$confirm" == "yes" ] || [ "$confirm" == "y" ] || [ "$confirm" == "YES" ] || [ "$confirm" == "Y" ]
 then
 
-#Set permissions for Velero on TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+#Set permissions for Velero on TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP.
 echo "Adding permissions for Velero..."
 AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv)
 AZURE_CLIENT_ID=$(az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv)
@@ -42,7 +42,7 @@ AZURE_RESOURCE_GROUP="${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP}"
 AZURE_CLOUD_NAME=AzurePublicCloud
 EOF
 
-#Install Velero
+#Install Velero.
 if ! command -v velero > /dev/null 2>&1;then
    echo "Installing Velero client locally..."
    latest_version=$(curl https://github.com/vmware-tanzu/velero/releases/latest)
@@ -58,7 +58,7 @@ if ! command -v velero > /dev/null 2>&1;then
    fi
 fi
 
-#Stare Velero on target AKS cluster
+#Stare Velero on target AKS cluster.
 echo "Staring Velero on target AKS cluster..."
 velero install \
   --provider azure \
@@ -68,10 +68,10 @@ velero install \
   --backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
   --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP
 
-#add node selector to the velero deployment to run Velero on the Linux nodes
+#add node selector to the velero deployment to run Velero only on the Linux nodes.
 kubectl patch deployment velero -n velero -p '{"spec": {"template": {"spec": {"nodeSelector":{"beta.kubernetes.io/os":"linux"}}}}}'
 
-#clean up local file credentials
+#clean up local file credentials.
 rm ./credentials-velero-target
 
 printf "\e[32;1m********************* \e[0m \n"

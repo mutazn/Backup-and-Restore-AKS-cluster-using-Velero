@@ -48,14 +48,14 @@ az storage account create \
   --kind BlobStorage \
   --access-tier Hot
   
-#Create Blob Container
+#Create Blob Container.
 echo "Creating Blob Container..."
 az storage container create \
   --name velero \
   --public-access off \
   --account-name $BACKUP_STORAGE_ACCOUNT_NAME
 
-#Set permissions for Velero
+#Set permissions for Velero.
 echo "Adding permissions for Velero..."
 AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv)
 AZURE_CLIENT_ID=$(az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv)
@@ -96,10 +96,12 @@ velero install \
   --bucket velero \
   --secret-file ./credentials-velero \
   --backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
-  --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP \
-  --wait
+  --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP
+  
+#add node selector to the velero deployment to run Velero only on the Linux nodes.
+kubectl patch deployment velero -n velero -p '{"spec": {"template": {"spec": {"nodeSelector":{"beta.kubernetes.io/os":"linux"}}}}}'
 
-#clean-up local file credentials
+#clean-up local file credentials.
 rm ./credentials-velero
 ```
 
@@ -144,7 +146,7 @@ AZURE_RESOURCE_GROUP="${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP}"
 AZURE_CLOUD_NAME=AzurePublicCloud
 EOF
 
-#Install Velero
+#Install Velero.
 if ! command -v velero > /dev/null 2>&1;then
    echo "Installing Velero client locally..."
    latest_version=$(curl https://github.com/vmware-tanzu/velero/releases/latest)
@@ -160,7 +162,7 @@ if ! command -v velero > /dev/null 2>&1;then
    fi
 fi
 
-#Stare Velero on target AKS cluster
+#Stare Velero on target AKS cluster.
 echo "Staring Velero on target AKS cluster..."
 velero install \
   --provider azure \
@@ -168,10 +170,12 @@ velero install \
   --bucket velero \
   --secret-file ./credentials-velero-target \
   --backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
-  --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP \
-  --wait
+  --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP
+  
+#add node selector to the velero deployment to run Velero only on the Linux nodes.
+kubectl patch deployment velero -n velero -p '{"spec": {"template": {"spec": {"nodeSelector":{"beta.kubernetes.io/os":"linux"}}}}}'
     
-#clean up local file credentials
+#clean up local file credentials.
 rm ./credentials-velero-target
 
 ```
