@@ -40,14 +40,14 @@ az storage account create \
   --kind BlobStorage \
   --access-tier Hot
   
-#Create Blob Container
+#Create Blob Container.
 echo "Creating Blob Container..."
 az storage container create \
   --name velero \
   --public-access off \
   --account-name $BACKUP_STORAGE_ACCOUNT_NAME
 
-#Set permissions for Velero
+#Set permissions for Velero.
 echo "Adding permissions for Velero..."
 AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv)
 AZURE_CLIENT_ID=$(az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv)
@@ -90,10 +90,10 @@ velero install \
   --backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
   --snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP
 
-#add node selector to the velero deployment to run Velero on the Linux nodes
+#add node selector to the velero deployment to run Velero only on the Linux nodes.
 kubectl patch deployment velero -n velero -p '{"spec": {"template": {"spec": {"nodeSelector":{"beta.kubernetes.io/os":"linux"}}}}}'
 
-#clean up local file credentials
+#clean up local file credentials.
 rm ./credentials-velero
 
 printf "\e[32;1m********************* \e[0m \n"
