@@ -252,7 +252,7 @@ rm ./credentials-velero-target
 
   ```bash
   kubectl get pod -n velero
-  kubectl logs -f -l component=velero -n velero
+  kubectl logs deploy/velero -n velero
   ```
 
 - List the backups:
@@ -260,7 +260,7 @@ rm ./credentials-velero-target
   ```bash
   velero backup get
   ```
- **Note**: if you cannot see the backups on the source AKS cluster, or if you can see the backups on the source AKS cluster, but you don’t see any output on the AKS target cluster when run `velero backup get` command, check velero pod logs using `kubectl logs -f -l component=velero -n velero` if you find any error.
+ **Note**: if you cannot see the backups on the source AKS cluster, or if you can see the backups on the source AKS cluster, but you don’t see any output on the target AKS cluster when run `velero backup get` command, check velero pod logs using `kubectl logs -f -l component=velero -n velero` if you find any error.
 
 **Example of a common error** when the target AKS cluster is not connecting to the Backup Storage Account: 
 `level=error msg="Error getting backup store for this location" backupLocation=default controller=backup-sync error="rpc error: code = Unknown desc = storage.AccountsClient#ListKeys: Failure responding to request: StatusCode=404 -- Original Error: autorest/azure: Service returned an error. Status=404 Code=\"ResourceNotFound\" Message=\"The Resource 'Microsoft.Storage/storageAccounts/velerohjfquoiyez0u' under resource group 'Velero_Backups' was not found. For more details please go to https://aka.ms/ARMResourceNotFoundFix\"" error.file="/go/src/github.com/vmware-tanzu/velero-plugin-for-microsoft-azure/velero-plugin-for-microsoft-azure/object_store.go:181" error.function=main.getStorageAccountKey logSource="pkg/controller/backup_sync_controller.go:175"`
