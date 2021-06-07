@@ -109,6 +109,8 @@ rm ./credentials-velero
 
 As we already have the storage account and the Blob Container has our backup from the source AKS cluster so we only need to connect the target AKS cluster to the storage account and access the backup to restore it to the target AKS cluster.
 
+* **Note:** If you want to restore the backup on an AKS cluster in a different subscription, move the backup storage account and the disks snapshots from the source subscription to the destination subscription, and run the target-aks-cluster.sh script on your target AKS cluster.
+    
 ### Installation
 No need to change on the script, just run the script and you will be asked to enter your variables.
 
