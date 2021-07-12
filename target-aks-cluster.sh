@@ -46,7 +46,7 @@ EOF
 if ! command -v velero > /dev/null 2>&1;then
    echo "Installing Velero client locally..."
    latest_version=$(curl https://github.com/vmware-tanzu/velero/releases/latest)
-   latest_version=$(echo ${latest_version} | grep -o 'v[0-9].[0-9].[0.9]')
+   latest_version=$(echo ${latest_version} | grep -o 'v[0-9].[0-9].[0-9]')
    wget https://github.com/vmware-tanzu/velero/releases/download/${latest_version}/velero-${latest_version}-linux-amd64.tar.gz
    mkdir ~/velero -p; tar -zxf velero-${latest_version}-linux-amd64.tar.gz -C ~/velero; cp ~/velero/velero-${latest_version}-linux-amd64/velero ~/velero/
    mkdir ~/.local/bin/ -p; cp ~/velero/velero ~/.local/bin/ > /dev/null 2>&1
