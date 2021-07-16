@@ -149,4 +149,3 @@ else
 	printf "\e[32;1mPlease connect to your AKS cluster before running the script. \e[0m \n"
 	exit 0
 fi
-
