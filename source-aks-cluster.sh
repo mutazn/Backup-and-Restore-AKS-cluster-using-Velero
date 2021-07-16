@@ -5,37 +5,38 @@ read input
 if [ "$input" == "yes" ] || [ "$input" == "y" ] || [ "$input" == "YES" ] || [ "$input" == "Y" ]
 then
 
-        read -p "Enter your Tenant ID: " TENANT_ID
-        while [ -z "$TENANT_ID" ]
-        do
-                read -p "Enter your Tenant ID: " TENANT_ID
-        done
-        set -- "$input"
+	read -p "Enter your Tenant ID: " TENANT_ID
+	while [ -z "$TENANT_ID" ]
+	do
+		read -p "Enter your Tenant ID: " TENANT_ID
+	done
+	set -- "$input"
 
-        read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
-        while [ -z "$SUBSCRIPTION_ID" ]
-        do
-                read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
-        done
-        set -- "$input"
+	read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+	while [ -z "$SUBSCRIPTION_ID" ]
+	do
+		read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+	done
+	set -- "$input"
 
-        read -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
-        while [ -z "$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP" ]
-        do
-                read -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
-        done
-        set -- "$input"
+	read -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+	while [ -z "$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP" ]
+	do
+		read -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+	done
+	set -- "$input"
 
-        read -p "Enter the location of your backup storage account: " LOCATION
-        while [ -z "$LOCATION" ]
-        do
-                read -p "Enter the location of your backup storage account: " LOCATION
-        done
-        set -- "$input"
+	read -p "Enter the location of your backup storage account: " LOCATION
+	while [ -z "$LOCATION" ]
+	do
+		read -p "Enter the location of your backup storage account: " LOCATION
+	done
+	set -- "$input"
 
-        printf "\e[32;1m*******Your Variables*******\e[0m \n"
+	printf "\e[32;1m*******Your Variables*******\e[0m \n"
 
 	#Define the variables.
+	TEST=TEST
 	TENANT_ID=${TENANT_ID//[\"\']} && echo TENANT_ID=${TENANT_ID}
 	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\']} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
 	BACKUP_RESOURCE_GROUP=Velero_Backups && echo BACKUP_RESOURCE_GROUP=${BACKUP_RESOURCE_GROUP} 
@@ -149,3 +150,4 @@ else
 	printf "\e[32;1mPlease connect to your AKS cluster before running the script. \e[0m \n"
 	exit 0
 fi
+
