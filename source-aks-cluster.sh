@@ -36,7 +36,6 @@ then
 	printf "\e[32;1m*******Your Variables*******\e[0m \n"
 
 	#Define the variables.
-	TEST=TEST
 	TENANT_ID=${TENANT_ID//[\"\']} && echo TENANT_ID=${TENANT_ID}
 	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\']} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
 	BACKUP_RESOURCE_GROUP=Velero_Backups && echo BACKUP_RESOURCE_GROUP=${BACKUP_RESOURCE_GROUP} 
