@@ -1,45 +1,45 @@
 #!/bin/bash
 printf "\e[32;1mDid you connect to your target AKS cluster, using: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup? [yes/no]\e[0m \n"
-read input
+read -e input
 
 if [ "$input" == "yes" ] || [ "$input" == "y" ] || [ "$input" == "YES" ] || [ "$input" == "Y" ]
 then
 
-	read -p "Enter your Tenant ID: " TENANT_ID
+	read -e -p "Enter your Tenant ID: " TENANT_ID
 	TENANT_ID=${TENANT_ID//[\"\'\ ]}
 	while [ -z "$TENANT_ID" ]
 	do
-		read -p "Enter your Tenant ID: " TENANT_ID
+		read -e -p "Enter your Tenant ID: " TENANT_ID
 		TENANT_ID=${TENANT_ID//[\"\'\ ]}
 	done
 	set -- "$TENANT_ID"
 
 
-	read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+	read -e -p "Enter your Subscription ID: " SUBSCRIPTION_ID
 	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]}
 	while [ -z "$SUBSCRIPTION_ID" ]
 	do
-		read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+		read -e -p "Enter your Subscription ID: " SUBSCRIPTION_ID
 		SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]}
 	done
 	set -- "$SUBSCRIPTION_ID"
 
-	read -p "Enter your target AKS Infrastructure Resource Group (MC_*): " TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+	read -e -p "Enter your target AKS Infrastructure Resource Group (MC_*): " TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
 	TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]}
 	while [ -z "$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP" ]
 	do
-		read -p "Enter your target AKS Infrastructure Resource Group (MC_*): " TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+		read -e -p "Enter your target AKS Infrastructure Resource Group (MC_*): " TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
 		TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]}
 	done
 	set -- "$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP"
 
 
 
-	read -p "Enter the backup storage account name that exists in the backup resource group: " BACKUP_STORAGE_ACCOUNT_NAME
+	read -e -p "Enter the backup storage account name that exists in the backup resource group: " BACKUP_STORAGE_ACCOUNT_NAME
 	BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME//[\"\'\ ]}
 	while [ -z "$BACKUP_STORAGE_ACCOUNT_NAME" ]
 	do
-		read -p "Enter the backup storage account name that exists in the backup resource group: " BACKUP_STORAGE_ACCOUNT_NAME
+		read -e -p "Enter the backup storage account name that exists in the backup resource group: " BACKUP_STORAGE_ACCOUNT_NAME
 		BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME//[\"\'\ ]}
 	done
 	set -- "$BACKUP_STORAGE_ACCOUNT_NAME"
@@ -57,7 +57,7 @@ then
 	TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]} && echo TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
 
 	printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"
-	read confirm
+	read -e confirm
 	while true; do
 		if [ "$confirm" == "yes" ] || [ "$confirm" == "y" ] || [ "$confirm" == "YES" ] || [ "$confirm" == "Y" ]
 		then
@@ -124,11 +124,11 @@ then
 	exit 0
 else
 	printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"
-	read confirm
+	read -e confirm
 	while [ -z "$confirm" ]
 	do
 		printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"
-		read confirm
+		read -e confirm
 	done
 	set -- "$confirm"
 	continue
