@@ -9,6 +9,7 @@ then
 	while [ -z "$TENANT_ID" ]
 	do
 		read -p "Enter your Tenant ID: " TENANT_ID
+		TENANT_ID=${TENANT_ID//[\"\'\ ]}
 	done
 	set -- "$TENANT_ID"
 
@@ -17,6 +18,7 @@ then
 	while [ -z "$SUBSCRIPTION_ID" ]
 	do
 		read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+		SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]}
 	done
 	set -- "$SUBSCRIPTION_ID"
 
@@ -24,6 +26,7 @@ then
 	while [ -z "$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP" ]
 	do
 		read -p "Enter your target AKS Infrastructure Resource Group (MC_*): " TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+		TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]}
 	done
 	set -- "$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP"
 
@@ -33,6 +36,7 @@ then
 	while [ -z "$BACKUP_STORAGE_ACCOUNT_NAME" ]
 	do
 		read -p "Enter the backup storage account name that exists in the backup resource group: " BACKUP_STORAGE_ACCOUNT_NAME
+		BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME//[\"\'\ ]}
 	done
 	set -- "$BACKUP_STORAGE_ACCOUNT_NAME"
 
