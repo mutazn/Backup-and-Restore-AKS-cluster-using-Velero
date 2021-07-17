@@ -2,52 +2,60 @@
 printf "\e[32;1mDid you connect to your AKS cluster, using: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup? [yes/no]\e[0m \n"
 read input
 
-if [ "$input" == "yes" ] || [ "$input" == "y" ] || [ "$input" == "YES" ] || [ "$input" == "Y" ]
+if [ "$input" == "yes" ] || [ "$input" == "y" ] || [ "$input" == "YES" ] || [ "$input" == "Yes" ] || [ "$input" == "Y" ]
 then
 
 	read -p "Enter your Tenant ID: " TENANT_ID
+	TENANT_ID=${TENANT_ID//[\"\'\ ]}
 	while [ -z "$TENANT_ID" ]
 	do
 		read -p "Enter your Tenant ID: " TENANT_ID
+		TENANT_ID=${TENANT_ID//[\"\'\ ]}
 	done
-	set -- "$input"
+	set -- "$TENANT_ID"
 
 	read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]}
 	while [ -z "$SUBSCRIPTION_ID" ]
 	do
 		read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+		SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]}
 	done
-	set -- "$input"
+	set -- "$SUBSCRIPTION_ID"
 
 	read -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+        SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]}
 	while [ -z "$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP" ]
 	do
 		read -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+		SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]}
 	done
-	set -- "$input"
+	set -- "$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP"
 
 	read -p "Enter the location of your backup storage account: " LOCATION
+	LOCATION=${LOCATION//[\"\'\ ]}
 	while [ -z "$LOCATION" ]
 	do
 		read -p "Enter the location of your backup storage account: " LOCATION
+		LOCATION=${LOCATION//[\"\'\ ]}
 	done
-	set -- "$input"
+	set -- "$LOCATION"
 
 	printf "\e[32;1m*******Your Variables*******\e[0m \n"
 
 	#Define the variables.
 	TENANT_ID=${TENANT_ID//[\"\']} && echo TENANT_ID=${TENANT_ID}
-	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\']} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
+	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
 	BACKUP_RESOURCE_GROUP=Velero_Backups && echo BACKUP_RESOURCE_GROUP=${BACKUP_RESOURCE_GROUP} 
 	BACKUP_STORAGE_ACCOUNT_NAME=velero$(head /dev/urandom | tr -dc a-z0-9 | head -c12) && echo BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME}
 	VELERO_SP_DISPLAY_NAME=velero$RANDOM && echo VELERO_SP_DISPLAY_NAME=${VELERO_SP_DISPLAY_NAME}
-	SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\']} && echo SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP}
-	LOCATION=${LOCATION//[\"\']} && echo LOCATION=${LOCATION}
+	SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]} && echo SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP}
+	LOCATION=${LOCATION//[\"\'\ ]} && echo LOCATION=${LOCATION}
 
 	printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"
 	read confirm
 	while true; do
-		if [ "$confirm" == "yes" ] || [ "$confirm" == "y" ] || [ "$confirm" == "YES" ] || [ "$confirm" == "Y" ]
+		if [ "$confirm" == "yes" ] || [ "$confirm" == "y" ] || [ "$confirm" == "YES" ] || [ "$confirm" == "Yes" ] || [ "$confirm" == "Y" ]
 		then
 
 			#Create a resource group for the backup storage account.
@@ -128,7 +136,7 @@ printf "\e[32;1m********************* \e[0m \n"
 printf "\e[32;1m********************* \e[0m \n"
 
 
-elif [ "$confirm" == "no" ] || [ "$confirm" == "n" ] || [ "$confirm" == "NO" ] || [ "$confirm" == "N" ]
+elif [ "$confirm" == "no" ] || [ "$confirm" == "n" ] || [ "$confirm" == "NO" ] || [ "$confirm" == "No" ] || [ "$confirm" == "N" ]
 then
 	printf "\e[33;1mYour installation has been cancelled.\e[0m \n"
 	exit 0
@@ -146,6 +154,6 @@ fi
 break
 done
 else
-	printf "\e[32;1mPlease connect to your AKS cluster before running the script. \e[0m \n"
+	printf "\e[33;1mPlease connect to your AKS cluster before running the script. \e[0m \n"
 	exit 0
 fi
