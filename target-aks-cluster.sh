@@ -66,8 +66,8 @@ then
 			echo "Adding permissions for Velero..."
 			AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv)
 			AZURE_CLIENT_ID=$(az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv)
-			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BACKUP_RESOURCE_GROUP
-			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BACKUP_RESOURCE_GROUP -o table
+			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP -o table
 
 			#Save Velero credentials to local file.
 			echo "Saving velero credentials to local file: credentials-velero-target..."
@@ -100,7 +100,7 @@ fi
 echo "Staring Velero on target AKS cluster..."
 velero install \
 	--provider azure \
-	--plugins velero/velero-plugin-for-microsoft-azure:v1.0.0 \
+	--plugins velero/velero-plugin-for-microsoft-azure:v1.2.0 \
 	--bucket velero \
 	--secret-file ./credentials-velero-target \
 	--backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
