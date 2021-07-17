@@ -1,42 +1,42 @@
 #!/bin/bash
 printf "\e[32;1mDid you connect to your AKS cluster, using: az aks get-credentials --name MyManagedCluster --resource-group MyResourceGroup? [yes/no]\e[0m \n"
-read input
+read -e input
 
 if [ "$input" == "yes" ] || [ "$input" == "y" ] || [ "$input" == "YES" ] || [ "$input" == "Yes" ] || [ "$input" == "Y" ]
 then
 
-	read -p "Enter your Tenant ID: " TENANT_ID
+	read -e -p "Enter your Tenant ID: " TENANT_ID
 	TENANT_ID=${TENANT_ID//[\"\'\ ]}
 	while [ -z "$TENANT_ID" ]
 	do
-		read -p "Enter your Tenant ID: " TENANT_ID
+		read -e -e -p "Enter your Tenant ID: " TENANT_ID
 		TENANT_ID=${TENANT_ID//[\"\'\ ]}
 	done
 	set -- "$TENANT_ID"
 
-	read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+	read -e -e -p "Enter your Subscription ID: " SUBSCRIPTION_ID
 	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]}
 	while [ -z "$SUBSCRIPTION_ID" ]
 	do
-		read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+		read -e -e -p "Enter your Subscription ID: " SUBSCRIPTION_ID
 		SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]}
 	done
 	set -- "$SUBSCRIPTION_ID"
 
-	read -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+	read -e -e -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
         SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]}
 	while [ -z "$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP" ]
 	do
-		read -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+		read -e -e -p "Enter your Source AKS Infrastructure Resource Group (MC_*): " SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP
 		SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]}
 	done
 	set -- "$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP"
 
-	read -p "Enter the location of your backup storage account: " LOCATION
+	read -e -e -p "Enter the location of your backup storage account: " LOCATION
 	LOCATION=${LOCATION//[\"\'\ ]}
 	while [ -z "$LOCATION" ]
 	do
-		read -p "Enter the location of your backup storage account: " LOCATION
+		read -e -e -p "Enter the location of your backup storage account: " LOCATION
 		LOCATION=${LOCATION//[\"\'\ ]}
 	done
 	set -- "$LOCATION"
@@ -53,7 +53,7 @@ then
 	LOCATION=${LOCATION//[\"\'\ ]} && echo LOCATION=${LOCATION}
 
 	printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"
-	read confirm
+	read -e -e confirm
 	while true; do
 		if [ "$confirm" == "yes" ] || [ "$confirm" == "y" ] || [ "$confirm" == "YES" ] || [ "$confirm" == "Yes" ] || [ "$confirm" == "Y" ]
 		then
@@ -142,11 +142,11 @@ then
 	exit 0
 else
 	printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"
-	read confirm
+	read -e -e confirm
 	while [ -z "$confirm" ]
 	do
 		printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"	    
-		read confirm
+		read -e -e confirm
 	done
 	set -- "$input"
 	continue
