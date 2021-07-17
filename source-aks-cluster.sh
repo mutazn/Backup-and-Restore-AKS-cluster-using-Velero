@@ -60,7 +60,7 @@ then
 
 			#Create a resource group for the backup storage account.
 			echo "Creating resource group..."
-			az group create -n $BACKUP_RESOURCE_GROUP --location $LOCATION
+			az group create -n $BACKUP_RESOURCE_GROUP --location $LOCATION -o table
 
 			#Create the storage account.
 			echo "Creating storage account..."
@@ -71,21 +71,21 @@ then
 				--encryption-services blob \
 				--https-only true \
 				--kind BlobStorage \
-				--access-tier Hot
+				--access-tier Hot -o table
 
 			#Create Blob Container.
 			echo "Creating Blob Container..."
 			az storage container create \
 				--name velero \
 				--public-access off \
-				--account-name $BACKUP_STORAGE_ACCOUNT_NAME
+				--account-name $BACKUP_STORAGE_ACCOUNT_NAME -o table
 
 			#Set permissions for Velero.
 			echo "Adding permissions for Velero..."
 			AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv)
 			AZURE_CLIENT_ID=$(az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv)
-			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BACKUP_RESOURCE_GROUP
-			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP 
+			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BACKUP_RESOURCE_GROUP -o table
+			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$SOURCE_AKS_INFRASTRUCTURE_RESOURCE_GROUP -o table
 
 			#Save Velero credentials to local file.
 			echo "Saving velero credentials to local file: credentials-velero..."
@@ -117,7 +117,7 @@ fi
 echo "Staring velero..."
 velero install \
 	--provider azure \
-	--plugins velero/velero-plugin-for-microsoft-azure:v1.0.0 \
+	--plugins velero/velero-plugin-for-microsoft-azure:v1.2.0 \
 	--bucket velero \
 	--secret-file ./credentials-velero \
 	--backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
