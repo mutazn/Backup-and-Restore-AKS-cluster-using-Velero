@@ -6,33 +6,41 @@ if [ "$input" == "yes" ] || [ "$input" == "y" ] || [ "$input" == "YES" ] || [ "$
 then
 
 	read -p "Enter your Tenant ID: " TENANT_ID
+	TENANT_ID=${TENANT_ID//[\"\'\ ]}
 	while [ -z "$TENANT_ID" ]
 	do
 		read -p "Enter your Tenant ID: " TENANT_ID
+		TENANT_ID=${TENANT_ID//[\"\'\ ]}
 	done
 	set -- "$TENANT_ID"
 
 
 	read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]}
 	while [ -z "$SUBSCRIPTION_ID" ]
 	do
 		read -p "Enter your Subscription ID: " SUBSCRIPTION_ID
+		SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]}
 	done
 	set -- "$SUBSCRIPTION_ID"
 
 	read -p "Enter your target AKS Infrastructure Resource Group (MC_*): " TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+	TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]}
 	while [ -z "$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP" ]
 	do
 		read -p "Enter your target AKS Infrastructure Resource Group (MC_*): " TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+		TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]}
 	done
 	set -- "$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP"
 
 
 
 	read -p "Enter the backup storage account name that exists in the backup resource group: " BACKUP_STORAGE_ACCOUNT_NAME
+	BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME//[\"\'\ ]}
 	while [ -z "$BACKUP_STORAGE_ACCOUNT_NAME" ]
 	do
 		read -p "Enter the backup storage account name that exists in the backup resource group: " BACKUP_STORAGE_ACCOUNT_NAME
+		BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME//[\"\'\ ]}
 	done
 	set -- "$BACKUP_STORAGE_ACCOUNT_NAME"
 
@@ -41,12 +49,12 @@ then
 
 
 	#Define the variables.
-	TENANT_ID=${TENANT_ID//[\"\']} && echo TENANT_ID=${TENANT_ID}
-	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\']} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
+	TENANT_ID=${TENANT_ID//[\"\'\ ]} && echo TENANT_ID=${TENANT_ID}
+	SUBSCRIPTION_ID=${SUBSCRIPTION_ID//[\"\'\ ]} && echo SUBSCRIPTION_ID=${SUBSCRIPTION_ID}
 	BACKUP_RESOURCE_GROUP=Velero_Backups && echo BACKUP_RESOURCE_GROUP=${BACKUP_RESOURCE_GROUP} 
-	BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME//[\"\']} && echo BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME}
+	BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME//[\"\'\ ]} && echo BACKUP_STORAGE_ACCOUNT_NAME=${BACKUP_STORAGE_ACCOUNT_NAME}
 	VELERO_SP_DISPLAY_NAME=velero$RANDOM && echo VELERO_SP_DISPLAY_NAME=$VELERO_SP_DISPLAY_NAME
-	TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\']} && echo TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
+	TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=${TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP//[\"\'\ ]} && echo TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP=$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP
 
 	printf "\e[32;1mPlease check your variables above and confirm to start the installation, do you want to continue? [yes/no] \e[0m \n"
 	read confirm
