@@ -120,6 +120,7 @@ curl -LO https://raw.githubusercontent.com/mutazn/Backup-and-Restore-AKS-cluster
 chmod +x ./target-aks-cluster.sh
 ./target-aks-cluster.sh
 ```
+<kbd>![demo-target-aks-cluster](https://user-images.githubusercontent.com/32297719/126152495-c3fff1b6-f89f-4f27-9117-03ce7934336e.gif)</kbd>
 
 The script contains the following in case you want to run the commands manually:
 ```bash
