@@ -64,7 +64,7 @@ then
 
 			#Set permissions for Velero on TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP.
 			echo "Adding permissions for Velero..."
-			AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --role "Contributor" --query 'password' -o tsv)
+			AZURE_CLIENT_SECRET=$(az ad sp create-for-rbac --name $VELERO_SP_DISPLAY_NAME --query 'password' -o tsv)
 			AZURE_CLIENT_ID=$(az ad sp list --display-name $VELERO_SP_DISPLAY_NAME --query '[0].appId' -o tsv)
 			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$BACKUP_RESOURCE_GROUP -o table
 			az role assignment create  --role Contributor --assignee $AZURE_CLIENT_ID --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$TARGET_AKS_INFRASTRUCTURE_RESOURCE_GROUP -o table
@@ -81,7 +81,7 @@ AZURE_CLOUD_NAME=AzurePublicCloud
 EOF
 
 #Install Velero.
-if ! command -v velero > /dev/null 2>&1;then
+#if ! command -v velero > /dev/null 2>&1;then
 	echo "Installing Velero client locally..."
 	latest_version=$(curl https://github.com/vmware-tanzu/velero/releases/latest)
 	latest_version=$(echo ${latest_version} | grep -o 'v[0-9].[0-9].[0-9]')
@@ -94,13 +94,13 @@ if ! command -v velero > /dev/null 2>&1;then
 	if ! cat ~/.bashrc | grep -q 'export PATH=$PATH:~/velero';then
 		echo 'export PATH=$PATH:~/velero' >> ~/.bashrc && source ~/.bashrc
 	fi
-fi
+#fi
 
 #Stare Velero on target AKS cluster.
 echo "Staring Velero on target AKS cluster..."
 velero install \
 	--provider azure \
-	--plugins velero/velero-plugin-for-microsoft-azure:v1.2.0 \
+	--plugins velero/velero-plugin-for-microsoft-azure:v1.4.1 \
 	--bucket velero \
 	--secret-file ./credentials-velero-target \
 	--backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
