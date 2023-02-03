@@ -101,8 +101,8 @@ EOF
 #Install and start Velero.
 #if ! command -v velero > /dev/null 2>&1;then
 	echo "Installing Velero client locally..."
-	latest_version=$(curl -i https://github.com/vmware-tanzu/velero/releases/latest)
-	latest_version=$(echo ${latest_version} | grep -o 'v[0-9].[0-9].[0-9]')
+	latest_version=$(curl -Ls -o /dev/null -w %{url_effective} https://github.com/vmware-tanzu/velero/releases/latest)
+	latest_version=$(cut -d "/" -f8 <<< "$latest_version")
 	wget https://github.com/vmware-tanzu/velero/releases/download/${latest_version}/velero-${latest_version}-linux-amd64.tar.gz
 	mkdir ~/velero -p; tar -zxf velero-${latest_version}-linux-amd64.tar.gz -C ~/velero; cp ~/velero/velero-${latest_version}-linux-amd64/velero ~/velero/
 	mkdir ~/.local/bin/ -p; cp ~/velero/velero ~/.local/bin/ > /dev/null 2>&1
@@ -117,14 +117,16 @@ EOF
 echo "Staring velero..."
 velero install \
 	--provider azure \
-	--plugins velero/velero-plugin-for-microsoft-azure:v1.4.1 \
+	--plugins velero/velero-plugin-for-microsoft-azure:v1.6.0 \
 	--bucket velero \
 	--secret-file ./credentials-velero \
 	--backup-location-config resourceGroup=$BACKUP_RESOURCE_GROUP,storageAccount=$BACKUP_STORAGE_ACCOUNT_NAME \
-	--snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP
+	--snapshot-location-config apiTimeout=5m,resourceGroup=$BACKUP_RESOURCE_GROUP \
+	--use-restic \
+	--default-volumes-to-restic
 
 #add node selector to the velero deployment to run Velero only on the Linux nodes.
-kubectl patch deployment velero -n velero -p '{"spec": {"template": {"spec": {"nodeSelector":{"beta.kubernetes.io/os":"linux"}}}}}'
+kubectl patch deployment velero -n velero -p '{"spec": {"template": {"spec": {"nodeSelector":{"kubernetes.io/os":"linux"}}}}}'
 
 #clean up local file credentials.
 rm ./credentials-velero
